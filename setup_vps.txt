@@ -40,7 +40,7 @@ PermitRootLogin no
 PasswordAuthentication no
 
 #Port 22
-Port 10222
+Port <any number you like e.g.  10222>
 
 <remote server>$ sudo systemctl restart sshd #enable sshd_config settings
 <remote server>$ sudo systemctl status sshd # that's okay if there is the messages including, "Active: active (running)"
@@ -71,4 +71,4 @@ Port 10222
 success
 
 * make sure to finish configuring firewall
-<local>$ ssh sakura@160.16.210.65 -p 10222 # option p is small p, "p", not but big p, "P"
+<local>$ ssh sakura@x.x.x.x -p <any number you like> # option p is small p, "p", not but big p, "P"
