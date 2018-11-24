@@ -1,0 +1,71 @@
+
+how to make use of ssh to connect to a remote server on CentOS7
+
+* sources;
+https://qiita.com/redamoon/items/eabaacabb5b1a0c34ca3
+* this remote server is "sakura vps"
+
+
+1. add <general user> and enable for the acct to login
+<remote server># yum -y update
+<remeote server># useradd <general user e.g. sakura>
+<remote server># passwd <sakura>
+<remote server># usermod -G wheel <sakura>
+<remote server># vim /etc/pam.d/su
+
+#auth sufficient pam_wheel.so trust use_uid #default
+auth sufficient pam_wheel.so trust use_uid
+
+<remote server># visudo
+#%wheel ALL=(ALL) ALL #default
+%wheel ALL=(ALL) ALL
+
+* make sure to login with ssh-command
+<local>$ ssh <sakura>@xxx.xxx.xxx.xx
+<remote server>$ sudo -s
+
+2. configure /etc/ssh/sshd_config at minimal level
+<remote server># sshd_config settings
+<remote server>sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+<remote server>sudo vim /etc/ssh/sshd_config
+
+
+#PermitRootLogin yes #default 
+PermitRootLogin no
+
+#PasswordAuthentication yes #default 
+PasswordAuthentication no
+
+#Port 22
+Port 10222
+
+<remote server>$ sudo systemctl restart sshd #enable sshd_config settings
+<remote server>$ sudo systemctl status sshd # that's okay if there is the messages including, "Active: active (running)"
+
+* make sure to finish setting-up sshd_config
+<remote server>$ ssh root@160.16.210.65 -p 10022 # that's okay, if there is error-message, including "Connection refused"
+
+
+3.send pubkey from local to remote server
+<remote server>$sudo -s
+<remote server># mkdir ~/.ssh
+<remote server># chmod 700 ~/.ssh/
+
+<local>$ sudo scp ~/.ssh/id_rsa.pub <general user>@x.x.x.x:~/.ssh/authorized_keys
+
+
+4. firewalld, change the ssh service port
+<remote server>$ sudo vim /usr/lib/firewalld/services/ssh.xml
+# rewrite from 'port="22"' to 'port="<any number you like, e.g. port="10222">"'
+
+<?xml version="1.0" encoding="utf-8"?><service>
+  <short>SSH</short>
+  <description>Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted communications. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful.</description>
+  <port protocol="tcp" port="22"/>
+</service>
+
+<remote server>$ sudo firewall-cmd --reload
+success
+
+* make sure to finish configuring firewall
+<local>$ ssh sakura@160.16.210.65 -p 10222 # option p is small p, "p", not but big p, "P"
