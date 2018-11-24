@@ -2,7 +2,10 @@
 how to make use of ssh to connect to a remote server on CentOS7
 
 * sources;
+さくらVPS CentOS7セットアップ（インストール〜SSH設定・Firewalld設定まで）
 https://qiita.com/redamoon/items/eabaacabb5b1a0c34ca3
+チュートリアル：CentOS 7（さくらのVPS）サーバ作成直後に設定しておくべき初期セキュリティ設定
+https://vps-news.sakura.ad.jp/tutorials/centos7-initial-settings/
 * this remote server is "sakura vps"
 
 
