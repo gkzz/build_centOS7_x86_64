@@ -27,7 +27,14 @@ auth sufficient pam_wheel.so trust use_uid
 <local>$ ssh <sakura>@xxx.xxx.xxx.xx
 <remote server>$ sudo -s
 
-2. configure /etc/ssh/sshd_config at minimal level
+2. send pubkey from local to remote server
+<remote server>$sudo -s
+<remote server># mkdir ~/.ssh
+<remote server># chmod 700 ~/.ssh/
+
+<local>$ sudo scp ~/.ssh/id_rsa.pub <general user>@x.x.x.x:~/.ssh/authorized_keys
+
+3. configure /etc/ssh/sshd_config at minimal level
 <remote server># sshd_config settings
 <remote server>sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
 <remote server>sudo vim /etc/ssh/sshd_config
@@ -46,15 +53,7 @@ Port <any number you like e.g.  10222>
 <remote server>$ sudo systemctl status sshd # that's okay if there is the messages including, "Active: active (running)"
 
 * make sure to finish setting-up sshd_config
-<remote server>$ ssh root@160.16.210.65 -p 10022 # that's okay, if there is error-message, including "Connection refused"
-
-
-3.send pubkey from local to remote server
-<remote server>$sudo -s
-<remote server># mkdir ~/.ssh
-<remote server># chmod 700 ~/.ssh/
-
-<local>$ sudo scp ~/.ssh/id_rsa.pub <general user>@x.x.x.x:~/.ssh/authorized_keys
+<remote server>$ ssh root@160.16.210.65 -p 10222 # that's okay, if there is error-message, including "Connection refused"
 
 
 4. firewalld, change the ssh service port
@@ -72,3 +71,4 @@ success
 
 * make sure to finish configuring firewall
 <local>$ ssh sakura@x.x.x.x -p <any number you like> # option p is small p, "p", not but big p, "P"
+<remote>$ systemctl restart sshd.service
