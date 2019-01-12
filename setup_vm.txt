@@ -1,0 +1,32 @@
+sudo yum update -y
+sudo yum -y install epel-release
+sudo yum -y groupinstall "Development Tools"
+sudo yum -y install dkms bzip2 gcc make kernel-devel kernel-headers
+
+
+#virtualboxでCentOSを起動させて、
+#メニューバー -> デバイス -> Guest Additions CD イメージ挿入をクリック
+sudo mkdir -p /mnt/cdrom
+sudo mount -r /dev/cdrom /mnt/cdrom
+
+sudo bash /mnt/cdrom/VBoxLinuxAdditions.run
+sudo reboot
+mkdir <share_folder_name>
+
+#コンソール上で共有フォルダの設定
+#virtualboxで共有したいフォルダーの名前をダブルクリックして、
+#自動マウントにチェックをいれます。
+#そうすると、/media/sf_share_folder_nameにマウントされます。
+sudo mount -t vboxsf <share_folder_name> $HOME/<share_folder_name>
+
+
+sudo vim /etc/rc.local 
+
+mount -t vboxsf <share_folder_name> $HOME/<share_folder_name>
+
+sudo chmod +x /etc/rc.d/rc.local  #実行権限を付加
+sudo bash /etc/rc.local
+
+sudo rm /sbin/mount.vboxsf
+$ sudo ln -s /usr/lib/VBoxGuestAdditions/mount.vboxsf /sbin/mount.vboxsf
+$ sudo mount -t vboxsf HOGE hoge
